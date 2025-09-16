@@ -26,11 +26,11 @@ class State
 
     private $href;
 
-    public static $fonttbl = [];
+    public static array $fonttbl = [];
 
-    public static $colortbl = [];
+    public static array $colortbl = [];
 
-    private static $highlight = [
+    private static array $highlight = [
         1  => 'Black',
         2  => 'Blue',
         3  => 'Cyan',
@@ -73,31 +73,31 @@ class State
         $this->fontcolor  = null;
         $this->background = null;
         $this->hcolor     = null;
-        $this->font       = isset($defaultFont) ? $defaultFont : null;
+        $this->font       = $defaultFont ?: null;
         $this->href       = null;
     }
 
-    public function PrintStyle()
+    public function PrintStyle(): string
     {
-        $style = "";
+        $style = '';
 
         if ($this->bold) {
-            $style .= "font-weight:bold;";
+            $style .= 'font-weight:bold;';
         }
         if ($this->italic) {
-            $style .= "font-style:italic;";
+            $style .= 'font-style:italic;';
         }
         if ($this->underline) {
-            $style .= "text-decoration:underline;";
+            $style .= 'text-decoration:underline;';
         }
         // state->underline is a toggle switch variable so no need for
         // a dedicated state->end_underline variable
         // if($this->state->end_underline) {$span .= "text-decoration:none;";}
         if ($this->strike) {
-            $style .= "text-decoration:line-through;";
+            $style .= 'text-decoration:line-through;';
         }
         if ($this->hidden) {
-            $style .= "display:none;";
+            $style .= 'display:none;';
         }
         if (isset($this->font)) {
             $font  = self::$fonttbl[$this->font];
@@ -110,19 +110,19 @@ class State
         if (isset($this->fontcolor)) {
             // Check if color is set. in particular when it's the 'auto' color
             if (array_key_exists($this->fontcolor, self::$colortbl) && self::$colortbl[$this->fontcolor]) {
-                $style .= "color:" . self::$colortbl[$this->fontcolor] . ";";
+                $style .= 'color:' . self::$colortbl[$this->fontcolor] . ';';
             }
         }
         // Background color:
         if (isset($this->background)) {
             // Check if color is set. in particular when it's the 'auto' color
             if (self::$colortbl[$this->background]) {
-                $style .= "background-color:" . self::$colortbl[$this->background] . ";";
+                $style .= 'background-color:' . self::$colortbl[$this->background] . ';';
             }
             // Highlight color:
         } elseif (isset($this->hcolor)) {
             if (isset(self::$highlight[$this->hcolor])) {
-                $style .= "background-color:" . self::$highlight[$this->hcolor] . ";";
+                $style .= 'background-color:' . self::$highlight[$this->hcolor] . ';';
             }
         }
 
@@ -132,7 +132,7 @@ class State
     /*
      * Check whether this State is equal to another State.
      */
-    public function equals($state)
+    public function equals($state): bool
     {
         if (!($state instanceof State)) {
             return false;
@@ -362,7 +362,7 @@ class State
     }
 
     /**
-     * @return mixed
+     * Get the value of href
      */
     public function getHref()
     {
@@ -370,7 +370,7 @@ class State
     }
 
     /**
-     * @param mixed $href
+     * Set the value of href
      */
     public function setHref($href): void
     {
