@@ -13,6 +13,7 @@ class State
   private $background;
   private $hcolor;
   private $font;
+  private $href;
   
   public static $fonttbl = array();
   public static $colortbl = array();
