@@ -242,13 +242,13 @@ class HtmlFormatter
     //if(substr($group->GetType(), 0, 4) == "pict") return;
 
     // If a destination was a HYPERLINK
-    if ($this->state->href) {
-        $this->OpenTag('a','target="_blank" href='.$this->state->href);
+    if ($this->state->getHref()) {
+        $this->OpenTag('a','target="_blank" href='.$this->state->getHref());
     }
 
     // Push a new state onto the stack:
-    $this->state = clone $this->state;
-    array_push($this->states, $this->state);
+    $this->state    = clone $this->state;
+    $this->states[] = $this->state;
 
     foreach($group->children as $child) {
       $this->FormatEntry($child);
@@ -270,7 +270,7 @@ class HtmlFormatter
       }
     if ($dest[1]->word == "fldinst" && count($dest)>=2 && substr($dest[2]->text,0,10)=="HYPERLINK " ) {
       $url=substr($dest[2]->text,10);
-      $this->state->href=$url;
+      $this->state->setHref($url);
     }
   }
 
@@ -401,7 +401,7 @@ class HtmlFormatter
       return $utf8 ? "&#{$this->ord_utf8($utf8)};" : "&#{$code};";
 
     } elseif ($this->encoding == 'UTF-8') {
-      return $utf8 ? $utf8 : mb_convert_encoding("&#{$code};", $this->encoding, 'HTML-ENTITIES');
+      return $utf8 ?: mb_convert_encoding("&#{$code};", $this->encoding, 'HTML-ENTITIES');
 
     } else {
       return $utf8 ? mb_convert_encoding($utf8, $this->encoding, 'UTF-8') :
@@ -496,12 +496,12 @@ class HtmlFormatter
 
   protected function GetSourceEncoding()
   {
-    if (isset($this->state->font)) {
-      if (isset(State::$fonttbl[$this->state->font]->codepage)) {
-        return State::$fonttbl[$this->state->font]->codepage;
+    if (empty($this->state->getFont()) === false) {
+      if (isset(State::$fonttbl[$this->state->getFont()]->codepage)) {
+        return State::$fonttbl[$this->state->getFont()]->codepage;
 
-      } elseif (isset(State::$fonttbl[$this->state->font]->charset)) {
-        return State::$fonttbl[$this->state->font]->charset;
+      } elseif (isset(State::$fonttbl[$this->state->getFont()]->charset)) {
+        return State::$fonttbl[$this->state->getFont()]->charset;
       }
     }
     return $this->RTFencoding;

@@ -1,7 +1,10 @@
 {
   "name": "noone-silent/rtf-html-php",
   "description": "RTF to HTML converter in PHP",
-  "keywords": ["rtf", "converter"],
+  "keywords": [
+    "rtf",
+    "converter"
+  ],
   "type": "library",
   "license": "MIT",
   "authors": [
@@ -20,7 +23,9 @@
     ]
   },
   "require": {
-    "php": "^8.0"
+    "php": "^8.0",
+    "ext-iconv": "*",
+    "ext-mbstring": "*"
   },
   "autoload": {
     "psr-4": {
