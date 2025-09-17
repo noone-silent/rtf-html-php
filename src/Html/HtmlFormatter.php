@@ -310,12 +310,14 @@ class HtmlFormatter
                 $this->FormatEntry($dest[$i]);
             }
         }
+
+        $link = $dest[2]->children[0]->text ?? '';
         if (
             $dest[1]->word == 'fldinst' &&
             count($dest) >= 2 &&
-            substr($dest[2]->text, 0, 10) === 'HYPERLINK '
+            substr($link, 0, 10) === 'HYPERLINK '
         ) {
-            $url = substr($dest[2]->text, 10);
+            $url = substr($link, 10);
             $this->state->setHref($url);
         }
     }
@@ -581,7 +583,7 @@ class HtmlFormatter
         return $this->RTFencoding;
     }
 
-    protected function GetEncodingFromCharset($fcharset)
+    protected function GetEncodingFromCharset($fcharset): string | null
     {
         /* maps windows character sets to iconv encoding names */
         $charset = [
@@ -613,12 +615,14 @@ class HtmlFormatter
 
         if (isset($charset[$fcharset])) {
             return $charset[$fcharset];
-        } else {
-            trigger_error("Unknown charset: {$fcharset}");
         }
+
+        trigger_error("Unknown charset: {$fcharset}");
+
+        return null;
     }
 
-    protected function GetEncodingFromCodepage($cpg)
+    protected function GetEncodingFromCodepage($cpg): string | null
     {
         $codePage = [
             'ansi' => 'CP1252',
@@ -661,10 +665,11 @@ class HtmlFormatter
 
         if (isset($codePage[$cpg])) {
             return $codePage[$cpg];
-        } else {
-            // Debug Error
-            trigger_error("Unknown codepage: {$cpg}");
         }
+        // Debug Error
+        trigger_error("Unknown codepage: {$cpg}");
+
+        return null;
     }
 
     protected function ord_utf8($chr)
